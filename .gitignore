@@ -1,0 +1,12 @@
+.vs/
+*.tlog
+*.pdb
+*.log
+*.recipe
+*.exp
+Template/Release/Template.ipdb
+Template/x64/
+Template/Debug/
+Template/Release/
+x64/Debug/
+x64/Release/
