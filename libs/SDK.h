@@ -1450,7 +1450,8 @@ namespace sdk {
 		virtual float aiGetLathPathChangeTime() = 0;
 		virtual int GetHealthBarHeight() = 0;
 
-
+		virtual Vector3 GetPerpendicularRightDirection() = 0;
+		virtual Vector3 GetFacingDirection() = 0;
 		virtual bool isFacing(const std::shared_ptr<GameObjectInstance>& unit, float max_angle = 90.0f) = 0;
 		virtual bool isAlive() = 0;
 		virtual bool isValid() = 0;
