@@ -1304,7 +1304,7 @@ namespace sdk {
 		Vector3 first_intersection_point;
 		Vector3 safe_position;
 		Vector3 initial_unit_pos;
-
+		bool did_pass = false;
 
 		bool isPassed() {
 
@@ -1313,19 +1313,27 @@ namespace sdk {
 				current_pos = position();
 			}
 			catch (const std::bad_function_call& e) {
-				std::cerr << "[LOG] Error in isPassed(): " << e.what() << std::endl;
+				std::cout << "[LOG] Error in isPassed(): " << e.what() << std::endl;
 				return true;
 			}
 
 			if (!current_pos.isValid() || !initial_unit_pos.isValid())
 				return false;
 
+		//	if (current_pos.x < 600.0f || current_pos.x > 14200.0f || current_pos.y < 600.0f || current_pos.y > 14200.0f) {
+			
+			//	return true;
+		//	}
+
 			auto dist_start_unit = start.distance(initial_unit_pos);
 			auto dist_start_pos = current_pos.distance(start);
 			auto dist_pos_unit = current_pos.distance(initial_unit_pos);
 
-			if (dist_pos_unit > width && dist_start_pos > dist_start_unit)
+		
+			if (dist_pos_unit > width && dist_start_pos > dist_start_unit) {
+				did_pass = true;
 				return true;
+			}
 
 			return false;
 		};
@@ -1763,6 +1771,7 @@ namespace sdk {
 		float max_range;
 		skillshot_type skillshot_type;
 		spell_targeting targeting_type;
+		//std::function<float()> delay;
 
 	};
 	
