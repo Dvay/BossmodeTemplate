@@ -1348,11 +1348,13 @@ namespace sdk {
 		bool* use = nullptr;
 	};
 
+	class GameObjectInstance;
 	class BuffInstance
 	{
 	public:
 		BYTE* orig_memory_address;
 		BYTE* this_address;
+		int m_ownerNetworkId = 0;
 
 		virtual BuffTypes BuffType() = 0;
 		virtual std::string& Name() = 0;
@@ -1365,11 +1367,19 @@ namespace sdk {
 		virtual int StackCount2() = 0;
 		virtual int32_t MaxStackCount() = 0; //0x0078
 		virtual int32_t SourceIndex() = 0; //0x0078
+		virtual std::shared_ptr<GameObjectInstance> GetOwner() = 0;
+		virtual std::shared_ptr<GameObjectInstance> GetSender() = 0;
+
 	};
+
 
 	class BuffManagerInstance
 	{
 	public:
+	
+
+
+
 		virtual std::shared_ptr<BuffInstance> GetBuff(const std::string name, bool exact = true) = 0;
 		virtual std::map<std::string, std::shared_ptr<BuffInstance>> GetAllBuffs() = 0;
 		virtual bool hasBuffWithTypes(std::vector<BuffTypes> types = {}) = 0;
@@ -1898,6 +1908,7 @@ namespace sdk {
 		_USTRING menu = { "F6",VK_F6 ,false };		// Insert
 		_USTRING combo = { "SPACE",VK_SPACE ,false };		// Sapace
 		_USTRING attack_key = { "F11",VK_F11 ,false };	// F11
+		_USTRING drag_scroll = { "F10",VK_F10 ,false };	// F11
 		_USTRING attack_champions_only = { "OEM_5",VK_OEM_5 ,false };	// F11
 		_USTRING stop_movement = { "S",0x53 ,false };	// F11
 		_USTRING ping_wards = { "H",0x48 ,false };	// F11
@@ -2083,6 +2094,7 @@ namespace sdk {
 		std::string default_champion_plugin = "";
 		std::string default_util_plugin = "";
 
+		bool dev_mode = false;
 		float menu_scale = 0.14f;
 		bool recall_tracking = false;
 		bool draw_hud = true;
@@ -2909,6 +2921,13 @@ namespace sdk {
 		*/
 		virtual  std::string& GetName() = 0;
 
+
+		/**
+		*  Gets the name of the plugin in which this has been created
+		* @return the name of the Plugin, this menuitem belongs to.
+		*/
+		virtual std::string& GetPluginName() = 0;
+
 	};
 
 
@@ -3003,7 +3022,7 @@ namespace sdk {
 		/**
 		*  should be ignored
 		*/
-		virtual void cleanup() = 0;
+		virtual void cleanup(std::string name) = 0;
 
 		/**
 		*  checks is a given subemnu or collapsible is open
