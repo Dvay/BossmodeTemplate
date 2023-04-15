@@ -1258,6 +1258,15 @@ namespace sdk {
 		}
 
 	};
+
+
+	struct ItemListPropertie {
+
+		int priority;
+		int networkid;
+		std::string name;
+		void* icon;
+	};
 	
 	struct EvadeMissileInfo {
 
@@ -1741,7 +1750,8 @@ namespace sdk {
 
 	class TargetSelectorInstance {
 	public:
-
+		std::shared_ptr<GameObjectInstance > selected_target;
+		std::map<int, ItemListPropertie> priority_list;
 		std::unordered_map<long, std::shared_ptr<GameObjectInstance>>  m_all_turrets;
 		std::unordered_map<long, std::shared_ptr<GameObjectInstance>>  m_all_inhibitors;
 		std::unordered_map<long, std::shared_ptr<GameObjectInstance>> m_all_units;
@@ -1891,6 +1901,7 @@ namespace sdk {
 		std::string key = "";
 		int keycode = 0x0;
 		bool clicked = false;
+		int toggle = 0;
 		int VKEY() {
 			if (keycode > 0x0)
 				return keycode;
@@ -2610,7 +2621,7 @@ namespace sdk {
 		* @param yasuo_wall if yasuo wall should be taken into account.
 		* @return true when target_obj will get hit by the missile
 		*/
-		virtual bool WillCollide(const Vector3& from, const Vector3& to, float missile_width, GameObjectInstance* target_obj, bool check_heros, bool check_creeps,bool yasuo_wall = true) = 0;
+		virtual bool WillCollide(const Vector3& from, const Vector3& to, float missile_width, GameObjectInstance* target_obj, bool check_heros, bool check_creeps,bool yasuo_wall = true, std::vector< GameObjectInstance*>* colliding_objects = nullptr) = 0;
 
 
 		/**
@@ -2898,8 +2909,22 @@ namespace sdk {
 		* @param optional do_save_to_settings if this value should be save to the champions ini file
 		* @param optional section_name only for utility plugins. This defines the section name this plugin will save all values to in the ini file. Should be the plugin name or something unique.
 		*/
-		virtual void AddHotkey(const std::string& lable, int& key, bool enabled = true, std::string tooltip = {}, bool do_save_to_settings = false, std::string section_name = "") = 0;
+		//virtual void AddHotkey(const std::string& lable, int& key, bool enabled = true, std::string tooltip = {}, bool do_save_to_settings = false, std::string section_name = "") = 0;
 	
+
+		/**
+		*  Adds a Hotkey button to the list of menu items which will be shown when the menu is open and  which can also be set to toggle or hold.
+		*
+		* @param lable the text which the menuitem will have when drawn
+		* @param key the reference to the variable which holds the keycode (https://learn.microsoft.com/de-de/windows/win32/inputdev/virtual-key-codes) of the hotkey
+		* @param toggle the reference to the variable which holds the information if its a toggle or not
+		* @param can_toggle set this to true, if the user can choose between toggle or not
+		* @param optional enabled if false, this hotkey cant be pressed.
+		* @param optional tooltip an std::string which will be shown when hovering the checkbox with the mouse
+		* @param optional do_save_to_settings if this value should be save to the champions ini file
+		* @param optional section_name only for utility plugins. This defines the section name this plugin will save all values to in the ini file. Should be the plugin name or something unique.
+		*/
+		virtual void AddHotkey(const std::string& lable, int& key, int& toggle, const bool& can_toggle, bool enabled = true, std::string tooltip = {}, bool do_save_to_settings = false, std::string section_name = "") = 0;
 		/**
 		*  Adds a simple text/lable to the menu
 		*
@@ -2908,6 +2933,16 @@ namespace sdk {
 		virtual void AddText(std::string& text) = 0;
 
 
+
+		/**
+		*  Adds a List with items which can optionally be reordered by drag & drop
+		*
+		* @param name the unique item name (its not shown in the menu).
+		* @param is_sortable if the list items should be sortable
+		* @param items std::map of the items to draw
+		* @param tooltip tooltip an std::string which will be shown when hovering the checkbox with the mouse
+		*/
+		virtual void AddItemList(std::string name, bool is_sortable, std::map<int, ItemListPropertie>& items, std::string tooltip = {}) = 0;
 		/**
 		*  Checks if the given item is a core item or plugin item.Should most likely not be used from plugin side.
 		*
