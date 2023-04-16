@@ -1329,11 +1329,6 @@ namespace sdk {
 			if (!current_pos.isValid() || !initial_unit_pos.isValid())
 				return false;
 
-		//	if (current_pos.x < 600.0f || current_pos.x > 14200.0f || current_pos.y < 600.0f || current_pos.y > 14200.0f) {
-			
-			//	return true;
-		//	}
-
 			auto dist_start_unit = start.distance(initial_unit_pos);
 			auto dist_start_pos = current_pos.distance(start);
 			auto dist_pos_unit = current_pos.distance(initial_unit_pos);
@@ -2105,6 +2100,7 @@ namespace sdk {
 		std::string default_champion_plugin = "";
 		std::string default_util_plugin = "";
 
+		bool log = false;
 		bool dev_mode = false;
 		float menu_scale = 0.14f;
 		bool recall_tracking = false;
