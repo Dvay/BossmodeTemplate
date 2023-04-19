@@ -1681,7 +1681,8 @@ namespace sdk {
 		virtual int32_t FloatVarsDecimals() = 0; //0x04F8
 		virtual float GetManaCosts() = 0; //0x052C
 		virtual bool isCharging() = 0;
-		virtual void Cast(std::shared_ptr<GameObjectInstance> to = nullptr, float charge_duration = 0.0, PredictionHitchance hitchance = PredictionHitchance::none) = 0;
+		virtual void ChargeSpell(float charge_duration) = 0;
+		virtual void Cast(std::shared_ptr<GameObjectInstance> to = nullptr, float charge_duration = 0.0) = 0;
 		virtual void Cast(Vector3 pos, float charge_duration = 0.0f) = 0;
 	};
 
@@ -1752,6 +1753,10 @@ namespace sdk {
 		std::unordered_map<long, std::shared_ptr<GameObjectInstance>> m_all_units;
 		std::vector<std::shared_ptr<GameObjectInstance>> m_all_heros;
 
+
+		virtual std::vector<std::shared_ptr<GameObjectInstance>> GetUnits(std::function<bool(std::shared_ptr<GameObjectInstance>)> predicate) = 0;
+		virtual std::vector<std::shared_ptr<GameObjectInstance>> GetHeros(std::function<bool(std::shared_ptr<GameObjectInstance>)> predicate) = 0;
+		
 
 		// Returns a Target by given TargetSelectorTypes in the given range of this unit (normally myhero)
 		virtual std::shared_ptr<GameObjectInstance> GetTarget(TargetSelectorTypes selection_type, float range, bool isAutoAttack = false) = 0;
@@ -2117,7 +2122,7 @@ namespace sdk {
 		bool enable_ward_tracker = false;
 		bool enable_evading = true;
 		bool show_fps = true;
-		bool always_evade = false;
+		bool always_evade = true;
 		bool draw_evade_state = true;
 		bool draw_last_seen = true;
 
@@ -2728,6 +2733,11 @@ namespace sdk {
 		* @return the current game time in milliseconds
 		*/
 		virtual float GameTime() = 0;
+
+
+
+		virtual std::shared_ptr<GameObjectInstance> GetUnderMouseObject() = 0;
+
 
 		/**
 		*  Current World Mouseposition 
